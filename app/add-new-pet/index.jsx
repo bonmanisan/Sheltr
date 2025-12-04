@@ -5,16 +5,16 @@ import { useNavigation, useRouter } from 'expo-router';
 import { collection, doc, getDocs, setDoc } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import {
-    ActivityIndicator,
-    Image,
-    Pressable,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    ToastAndroid,
-    TouchableOpacity,
-    View
+  ActivityIndicator,
+  Image,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  ToastAndroid,
+  TouchableOpacity,
+  View
 } from 'react-native';
 import { uploadToCloudinary } from '../../config/CloudinaryConfig';
 import { db } from '../../config/FirebaseConfig';
@@ -48,6 +48,7 @@ export default function AddNewPet() {
     try {
       const snapshot = await getDocs(collection(db, 'Category'));
       const categories = snapshot.docs.map((docSnap) => docSnap.data());
+      console.log('Fetched categories:', categories); // Debug log
       setCategoryList(categories);
     } catch (error) {
       console.log('Error fetching categories:', error);
@@ -256,39 +257,50 @@ export default function AddNewPet() {
         </View>
       ))}
 
-      {/* Category */}
+      {/* Category Picker */}
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Pet Category *</Text>
         <View style={styles.pickerContainer}>
           <Picker
+            mode="dropdown"
             selectedValue={formData.category}
-            style={styles.picker}
+            style={[styles.picker, { color: '#ffffffff' }]}
             dropdownIconColor={Colors.PRIMARY}
             onValueChange={(value) => handleInputChange('category', value)}
           >
             {categoryList.length > 0 ? (
               categoryList.map((c, i) => (
-                <Picker.Item key={i} label={c.name} value={c.name} />
+                <Picker.Item
+                  key={i}
+                  label={c.name}
+                  value={c.name}
+                  color="#000"
+                />
               ))
             ) : (
-              <Picker.Item label="Dogs" value="Dogs" />
+              <>
+                <Picker.Item label="Dogs" value="Dogs" color="#000" />
+                <Picker.Item label="Cats" value="Cats" color="#000" />
+                <Picker.Item label="Birds" value="Birds" color="#000" />
+              </>
             )}
           </Picker>
         </View>
       </View>
 
-      {/* Gender */}
+      {/* Gender Picker */}
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Gender *</Text>
         <View style={styles.pickerContainer}>
           <Picker
+            mode="dropdown"
             selectedValue={formData.sex}
-            style={styles.picker}
+            style={[styles.picker, { color: '#ffffffff' }]}
             dropdownIconColor={Colors.PRIMARY}
             onValueChange={(value) => handleInputChange('sex', value)}
           >
-            <Picker.Item label="Male" value="Male" />
-            <Picker.Item label="Female" value="Female" />
+            <Picker.Item label="Male" value="Male" color="#000" />
+            <Picker.Item label="Female" value="Female" color="#000" />
           </Picker>
         </View>
       </View>
@@ -423,8 +435,6 @@ const styles = StyleSheet.create({
   },
   picker: {
     height: 55,
-    paddingHorizontal: 10,
-    fontFamily: 'outfit',
-    fontSize: 16,
+    paddingHorizontal: 10
   },
 });

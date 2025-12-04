@@ -4,7 +4,7 @@
     "slug": "sheltr",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/logo.png",
     "scheme": "sheltr",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -19,7 +19,11 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.christianmanisan.sheltr"
     },
     "web": {
       "output": "static",
@@ -28,7 +32,7 @@
     "plugins": [
       "expo-router",
       [
-         "expo-image-picker",
+        "expo-image-picker",
         {
           "photosPermission": "The app accesses your photos to let you share them with your friends."
         }
@@ -49,6 +53,12 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "3f89d6f5-723c-4ba1-8c03-4c6083214a17"
+      }
     }
   }
 }

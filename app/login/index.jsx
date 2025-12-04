@@ -2,29 +2,27 @@ import { useAuth, useOAuth } from '@clerk/clerk-expo';
 import * as Linking from 'expo-linking';
 import { router } from "expo-router";
 import * as WebBrowser from 'expo-web-browser';
-import React, { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { Image, Pressable, Text, View } from 'react-native';
 import Colors from './../../constants/Colors';
 
+WebBrowser.maybeCompleteAuthSession();
 
 export const useWarmupBrowser = () => {
-  React.useEffect(() => {
+  useEffect(() => {
     WebBrowser.warmUpAsync();
     return () => WebBrowser.coolDownAsync();
   }, []);
 };
 
-WebBrowser.maybeCompleteAuthSession();
-
 export default function LoginScreen() {
   useWarmupBrowser();
 
   const { startOAuthFlow } = useOAuth({ strategy: 'oauth_google' });
-
-
   const { isSignedIn } = useAuth();
 
-  React.useEffect(() => {
+  // Redirect if already signed in
+  useEffect(() => {
     if (isSignedIn) {
       router.replace("/(tabs)/home");
     }
@@ -32,29 +30,27 @@ export default function LoginScreen() {
 
   const onPress = useCallback(async () => {
     try {
+      // Make sure your scheme matches what you set in app.json and Clerk
+      const redirectUrl = Linking.createURL("/", { scheme: "sheltr" });
+
       const { createdSessionId, setActive } = await startOAuthFlow({
-        redirectUrl: Linking.createURL("/", { scheme: "sheltr" }),
+        redirectUrl,
       });
 
       if (createdSessionId) {
         await setActive({ session: createdSessionId });
         router.replace("/(tabs)/home");
       }
-      
     } catch (err) {
       console.error('OAuth error:', err);
     }
-  }, []);
+  }, [startOAuthFlow]);
 
   return (
     <View style={{ backgroundColor: Colors.WHITE, height: '100%' }}>
-      <View style={{ 
-        flex: 1, 
-        justifyContent: 'center', 
-        alignItems: 'center' 
-      }}>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <Image
-          source={require('./../../assets/images/login2.png')}
+          source={require('./../../assets/images/login1.png')}
           style={{ width: '80%', height: 500 }}
           resizeMode="contain"
         />
@@ -73,7 +69,7 @@ export default function LoginScreen() {
           onPress={onPress}
           style={{
             padding: 14,
-            marginTop: 100,
+            marginTop: 50,
             backgroundColor: Colors.PRIMARY,
             width: '100%',
             borderRadius: 14,
